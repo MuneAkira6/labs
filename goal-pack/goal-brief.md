@@ -152,7 +152,11 @@ and split a longer one (`pnpm lab:b --arm <name>` runs one arm).
 2. Do not commit or push; the human commits after the run.
 3. **Read and write only inside this repository and the OS temp directory.** Do not open, list or search
    anything else on this machine — not the home directory, not other repositories, not other users'
-   containers.
+   containers. The OS temp directory is shared with other users: every file or directory you create
+   there carries the prefix `labs-` (`mkdtempSync(join(tmpdir(), 'labs-…-'))`), a check for leftovers
+   lists `labs-*` only, and an entry without that prefix is never opened, read or removed, not even to
+   find out whose it is. In the previous run of this portfolio the worker opened such files to identify
+   them, and their names reached the ledger.
 4. **Never start `claude`**, and never change the CLI or its configuration.
 5. No secret in any file of the repository. Do not unset or print the proxy variables or any token.
 6. Do not fix unrelated problems; record them under "Incidental findings". A defect **your own change**
