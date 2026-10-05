@@ -40,7 +40,18 @@ appears anywhere in it; the README points to case study 07 for those.
   JDK only.
 - Paths are built with `node:path`; nothing assumes `/` or a POSIX shell, so the labs run on Windows as
   written (facts F11). A runner that starts Docker passes its arguments as an array, never through a
-  shell string.
+  shell string. Four rules that the previous run of this portfolio broke on Windows only, found after
+  it:
+  - a path written into a committed file is relative to the repository and written with `/` on every
+    OS (`relative(…).split(sep).join('/')`);
+  - a module imported by a path built at run time goes through `pathToFileURL(path).href`: on Windows
+    `import('C:\\…')` reads `c:` as a URL scheme and fails;
+  - a temporary directory is removed with `rmSync(dir, { recursive: true, force: true, maxRetries: 10 })`
+    after the results are written, and a failed removal is printed and never costs a result (on
+    Windows a process that has just exited can hold its directory for a moment);
+  - a test does not assume where the checkout lives (not under the home directory, not a short path)
+    nor a fast process start: a test that starts a process gives it at least 3 s before a timeout, and
+    `vitest.config.ts` keeps its `testTimeout` of 30 s.
 
 ### Commands
 
