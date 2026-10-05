@@ -229,9 +229,9 @@ actions/upload-artifact    v7.0.1   043fb46d1a93c77aae656e7c1c64a875d1fc6a0a (co
 ### F13: The relay installed for this run
 
 - Measured on: 2026-10-05 / last re-measured: 2026-10-05
-- Command: `bash tests/run-all.sh` in a fresh copy of the goal-bus-kit tree that was committed as
-  `bce56e8` minutes later (the commit added only README text to it), on this machine, with
-  `GOALBUS_AWK=gawk` and then `GOALBUS_AWK=mawk`
+- Command: `bash tests/run-all.sh` in a fresh `git archive` of goal-bus-kit at `bce56e8` (the clone at
+  `~/portfolio-runs/goal-bus-kit` that the run installs from), on this machine, with `GOALBUS_AWK=gawk`
+  (27 s) and then `GOALBUS_AWK=mawk` (26 s)
 - Output (the summary lines of each):
 
 ```
