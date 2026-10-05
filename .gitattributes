@@ -1,0 +1,3 @@
+* text=auto eol=lf
+# The goldens are kept byte for byte: BOM and CRLF are part of what lab A proves.
+lab-a/goldens/** -text

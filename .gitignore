@@ -1,0 +1,10 @@
+node_modules/
+.claude/
+
+# the generated application of lab C and its builds (lab-c/generate.ts writes it again)
+lab-c/app/
+
+# sbt's output, should anything ever compile outside the container
+lab-b/target/
+lab-b/project/target/
+lab-b/project/project/

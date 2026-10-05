@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "includes": [
+      "lab-a/**/*.ts",
+      "lab-c/**/*.ts",
+      "tools/**/*.ts",
+      "test/**/*.ts",
+      "vitest.config.ts",
+      "!lab-c/app",
+      "!**/results",
+      "!lab-a/goldens"
+    ]
+  },
+  "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 },
+  "linter": { "enabled": true, "rules": { "preset": "recommended" } },
+  "javascript": { "formatter": { "quoteStyle": "single", "semicolons": "asNeeded" } }
+}

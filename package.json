@@ -1,0 +1,39 @@
+{
+  "name": "labs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Three reproducible experiments: a report N+1 rewritten to read in bulk and proved byte-identical, a thread pool that freezes under blocking await, and one React app built with webpack + Babel and with Rsbuild",
+  "type": "module",
+  "packageManager": "pnpm@11.28.0",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "test": "vitest run",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit",
+    "lab:a": "node tools/lab-a.ts",
+    "lab:a:golden": "node tools/lab-a.ts --golden",
+    "lab:b": "node tools/lab-b.ts",
+    "lab:c": "node tools/lab-c.ts"
+  },
+  "devDependencies": {
+    "@babel/core": "^8.0.0",
+    "@babel/preset-react": "^8.0.0",
+    "@babel/preset-typescript": "^8.0.0",
+    "@biomejs/biome": "^2.2.0",
+    "@rsbuild/core": "^2.2.0",
+    "@rsbuild/plugin-react": "^2.1.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "babel-loader": "^10.1.0",
+    "html-webpack-plugin": "^5.6.0",
+    "mongodb": "^7.7.0",
+    "pnpm": "11.28.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "typescript": "^7.0.0",
+    "vitest": "^5.0.0",
+    "webpack": "^5.111.0",
+    "webpack-dev-server": "^6.0.0"
+  }
+}
