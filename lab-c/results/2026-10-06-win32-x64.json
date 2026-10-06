@@ -1,0 +1,113 @@
+{
+  "lab": "c",
+  "machine": {
+    "date": "2026-10-06T01:04:08.534Z",
+    "os": "Windows_NT 10.0.26100",
+    "arch": "x64",
+    "cpu": "Intel(R) Core(TM) Ultra 5 235U x 14",
+    "memoryGiB": 31.4,
+    "node": "v24.15.0",
+    "commit": "16d924f"
+  },
+  "modules": 1000,
+  "warmups": 1,
+  "runs": 5,
+  "appDir": "lab-c/app",
+  "builds": [
+    {
+      "tool": "webpack",
+      "warmupMs": 8396.5224,
+      "runsMs": [
+        5688.8966,
+        6629.057600000002,
+        5842.155799999997,
+        5909.448899999999,
+        5544.224399999999
+      ],
+      "medianMs": 5842.155799999997,
+      "minMs": 5544.224399999999,
+      "maxMs": 6629.057600000002
+    },
+    {
+      "tool": "rsbuild",
+      "warmupMs": 649.5796000000046,
+      "runsMs": [
+        591.9884999999995,
+        583.7639999999956,
+        595.5760999999984,
+        615.7439000000013,
+        611.781799999997
+      ],
+      "medianMs": 595.5760999999984,
+      "minMs": 583.7639999999956,
+      "maxMs": 615.7439000000013
+    }
+  ],
+  "devStarts": [
+    {
+      "tool": "webpack",
+      "port": 18461,
+      "warmupMs": 3883.483499999995,
+      "runsMs": [
+        3723.8418999999994,
+        3727.133200000004,
+        3830.7433999999994,
+        3845.188399999999,
+        3994.4844999999914
+      ],
+      "medianMs": 3830.7433999999994,
+      "minMs": 3723.8418999999994,
+      "maxMs": 3994.4844999999914,
+      "scriptSrc": "main.js",
+      "startsWithPortFreedAfterStop": 6,
+      "starts": 6
+    },
+    {
+      "tool": "rsbuild",
+      "port": 18462,
+      "warmupMs": 811.126700000008,
+      "runsMs": [
+        824.4438999999984,
+        778.431500000006,
+        882.5129000000015,
+        833.215200000006,
+        877.8479000000079
+      ],
+      "medianMs": 833.215200000006,
+      "minMs": 778.431500000006,
+      "maxMs": 882.5129000000015,
+      "scriptSrc": "/static/js/lib-react.js",
+      "startsWithPortFreedAfterStop": 6,
+      "starts": 6
+    }
+  ],
+  "equivalence": [
+    {
+      "tool": "webpack",
+      "modules": 1000,
+      "labelsFound": 1000,
+      "mountsOnRoot": true,
+      "firstScriptSrc": "main.502d4fbef09e5d9617e3.js",
+      "assets": [
+        "index.html",
+        "main.502d4fbef09e5d9617e3.js",
+        "main.502d4fbef09e5d9617e3.js.LICENSE.txt"
+      ],
+      "violations": []
+    },
+    {
+      "tool": "rsbuild",
+      "modules": 1000,
+      "labelsFound": 1000,
+      "mountsOnRoot": true,
+      "firstScriptSrc": "/static/js/lib-react.c7700dff93.js",
+      "assets": [
+        "index.html",
+        "static/js/index.dd5a0eadd9.js",
+        "static/js/lib-react.c7700dff93.js",
+        "static/js/lib-react.c7700dff93.js.LICENSE.txt"
+      ],
+      "violations": []
+    }
+  ]
+}

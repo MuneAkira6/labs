@@ -1,17 +1,23 @@
 // The result rules of SCOPE.md 1.4: the median, the range, the file names and the machine block.
 
-import { cpus } from 'node:os'
+import { spawnSync } from 'node:child_process'
+import { cpus, tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { arch, platform, version } from 'node:process'
 import { describe, expect, it } from 'vitest'
 import {
+  gitCommit,
   machineBlock,
   machineBlockMarkdown,
   median,
   minMax,
+  NO_GIT_COMMIT,
   resultFileNames,
   roundMs,
   utcDate,
 } from '../tools/results.ts'
+
+const REPO = join(import.meta.dirname, '..')
 
 describe('the median and range rules (SCOPE.md 1.4)', () => {
   it('takes the middle value of an odd count', () => {
@@ -80,8 +86,27 @@ describe('the machine block (SCOPE.md 1.4)', () => {
     expect(block.cpu).toContain(` x ${cpus().length}`)
     expect(block.memoryGiB).toBeGreaterThan(0)
     expect(Number(block.memoryGiB.toFixed(1))).toBe(block.memoryGiB)
-    expect(block.commit).toMatch(/^[0-9a-f]{7,}(\+dirty)?$/)
+    // a git checkout names its commit; a tree without `.git` says that it has none
+    const inGit =
+      spawnSync('git', ['rev-parse', '--is-inside-work-tree'], {
+        cwd: REPO,
+        encoding: 'utf8',
+      }).stdout?.trim() === 'true'
+    if (inGit) expect(block.commit).toMatch(/^[0-9a-f]{7,}(\+dirty)?$/)
+    else expect(block.commit).toBe(NO_GIT_COMMIT)
     expect(block.docker).toBeUndefined()
+  })
+
+  // Found after the run: in a fresh tree unpacked without `.git`, the commit came out as ''.
+  it('outside a git checkout, commit says so instead of being empty', async () => {
+    const saved = process.env.GIT_DIR
+    process.env.GIT_DIR = join(tmpdir(), 'labs-no-such-git-dir')
+    try {
+      expect(await gitCommit()).toBe(NO_GIT_COMMIT)
+    } finally {
+      if (saved === undefined) delete process.env.GIT_DIR
+      else process.env.GIT_DIR = saved
+    }
   })
 
   it('adds docker when the lab uses it, and the Markdown shows every field', async () => {

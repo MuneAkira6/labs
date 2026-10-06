@@ -446,3 +446,50 @@ rows quote, so it is kept rather than pruned.
 `Future { … }(pool)` passes the execution context positionally, as the table of 3.1 writes it. Scala
 3.8.4 accepts it and emits 7 warnings asking for a `using` clause instead. The code is left in the
 contract's own form; the warnings are not errors and the build succeeds.
+
+## 10. Changes after the run
+
+Made by a human on 2026-10-06, after the bus had answered DONE; not reviewed by the bus.
+
+1. **The planned pause.** At the author's request the run was stopped at a goal boundary:
+   `PAUSE_AFTER` was set to `G3 G4` in the run copy's `.claude/hooks/bus.config.sh` (ignored by git)
+   while the review of G3 was already under way, so the first boundary that read it was G4's
+   (2026-10-05 18:32:07). The relay saved the next instructions in `goal-pack/.next-step` and the worker
+   stopped. On 2026-10-06 the line was restored and the same worker resumed at 09:35:38 with the saved
+   instructions; G5 ran and the bus answered DONE at 09:56:03. No file of the repository was touched.
+2. **Windows.** On the author's PC (Windows 11, Intel Core Ultra 5 235U x 14, 31.4 GiB, Node v24.15.0,
+   Docker Desktop 28.5.1): `pnpm install --frozen-lockfile` (10.3 s), `pnpm test` (`Tests  90 passed
+   (90)` twice, before the change of item 3), `pnpm lint` (30 files), `pnpm typecheck`, then the three
+   labs as「動かし方」runs them: `pnpm lab:c` (exit 0, 75 s), `pnpm lab:a` (exit 0, 99 s; all sixteen
+   outputs byte-identical to the goldens, the request counts those of the Linux run) and `pnpm lab:b`
+   (exit 0, 177 s; every arm as 3.3 expects). Their files are `lab-*/results/2026-10-06-win32-x64.*`.
+   For this the two images of section 1 were pulled by digest on that PC (40 s and 54 s); nothing was
+   pulled on the run's host.
+3. **Lab B's `docker run` clears the proxy variables.** Docker Desktop passes the PC's proxy settings
+   into every container it starts: a plain `docker run --network none` of a local image saw six proxy
+   variables, four of them with `user:pass@` in the value, and with `-e HTTP_PROXY=` and the five others
+   it saw none set. Lab A's compose file cleared all six from the start (2.8); lab B's arms did not.
+   They have no network and print no environment, so nothing could leave, but they now clear the six as
+   well: `tools/docker-env.ts` (`PROXY_VARIABLES`, `clearedProxyEnv()`), spread into `dockerArgv` of
+   `tools/lab-b.ts` after `--network none` and before the image. New `test/docker-env.test.ts`, four
+   tests: the six options; lab B's argv clears them in that place; a control that removes the line from
+   a copy of `tools/lab-b.ts` and sees the same check fail; lab A's compose file sets all six to `''`.
+   With the run's `tools/lab-b.ts` two of the four fail. After the change: `Tests  94 passed (94)`,
+   `pnpm lint` 32 files, `pnpm typecheck`; the Windows `pnpm lab:b` of item 2 ran with it.
+4. **README.** 「結果」 gained the Windows table; 「制約・既知の限界」 no longer says the Windows run is
+   still to come; 「作り方」 records the run (duration, reviews, the pause, the cost) and this list.
+5. **The machine block's `commit` outside a git checkout.** In the fresh tree of item 6, unpacked
+   without `.git`, `pnpm test` failed one test: `gitCommit()` ignored git's exit code, so `commit` came
+   out as `''`, and a lab run from an archive of the repository would have written that into its result
+   file. It now says `none (not a git checkout)` (`NO_GIT_COMMIT` in `tools/results.ts`). The
+   machine-block test expects a SHA inside a git checkout and that string outside one, and a new test
+   points `GIT_DIR` at a path that does not exist and asserts the string (red with the run's
+   `tools/results.ts`, which returns `''`). On Windows afterwards: `Tests  95 passed (95)` twice,
+   `pnpm lint` 32 files, `pnpm typecheck`.
+6. **Verified again from a fresh tree on the run's host**, the working tree with every change above
+   unpacked into a new directory under `/tmp`, without `.git`: the goldens' `SHA256SUMS` (8 of 8),
+   `pnpm install --frozen-lockfile`, `pnpm test` (`Tests  95 passed (95)`, twice), `pnpm lint` (32
+   files), `pnpm typecheck`, and the CI's small runs `pnpm lab:a --size S --runs 1`, `pnpm lab:b` and
+   `pnpm lab:c --modules 200 --runs 1`, each exit 0 with every check held; afterwards no Docker object
+   `labs-*`, no listener on 18460-18469 and no `labs-*` entry of the run's user in the OS temp
+   directory. The first attempt of this check is how item 5 was found.

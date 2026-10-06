@@ -1,0 +1,649 @@
+{
+  "lab": "a",
+  "machine": {
+    "date": "2026-10-06T01:10:20.250Z",
+    "os": "Windows_NT 10.0.26100",
+    "arch": "x64",
+    "cpu": "Intel(R) Core(TM) Ultra 5 235U x 14",
+    "memoryGiB": 31.4,
+    "node": "v24.15.0",
+    "commit": "16d924f+dirty",
+    "docker": "28.5.1"
+  },
+  "sizes": [
+    "S",
+    "L"
+  ],
+  "warmups": 1,
+  "runs": 3,
+  "equality": [
+    {
+      "size": "S",
+      "report": "users-usage",
+      "implementation": "naive",
+      "sha256": "38ddc64162c34f87f7847f1bfc9e80ad2aab09c916a1043dd68ffcf2ad41ad49",
+      "goldenSha256": "38ddc64162c34f87f7847f1bfc9e80ad2aab09c916a1043dd68ffcf2ad41ad49",
+      "bytesEqual": true
+    },
+    {
+      "size": "S",
+      "report": "groups-usage",
+      "implementation": "naive",
+      "sha256": "dc6cc2273d5371fe0216308f39c56a785cc5c1e595db9fc677d543f6a595c7bc",
+      "goldenSha256": "dc6cc2273d5371fe0216308f39c56a785cc5c1e595db9fc677d543f6a595c7bc",
+      "bytesEqual": true
+    },
+    {
+      "size": "S",
+      "report": "users-charge",
+      "implementation": "naive",
+      "sha256": "d7ee2db547f175e9745f3c499d1cbaedbacd2b5e676c9102262a61690c3bd627",
+      "goldenSha256": "d7ee2db547f175e9745f3c499d1cbaedbacd2b5e676c9102262a61690c3bd627",
+      "bytesEqual": true
+    },
+    {
+      "size": "S",
+      "report": "groups-charge",
+      "implementation": "naive",
+      "sha256": "2c6a354e20ab23641c553176b7d922ddfcb312602217cbf75b22b2cd7afb9fd0",
+      "goldenSha256": "2c6a354e20ab23641c553176b7d922ddfcb312602217cbf75b22b2cd7afb9fd0",
+      "bytesEqual": true
+    },
+    {
+      "size": "S",
+      "report": "users-usage",
+      "implementation": "bulk",
+      "sha256": "38ddc64162c34f87f7847f1bfc9e80ad2aab09c916a1043dd68ffcf2ad41ad49",
+      "goldenSha256": "38ddc64162c34f87f7847f1bfc9e80ad2aab09c916a1043dd68ffcf2ad41ad49",
+      "bytesEqual": true
+    },
+    {
+      "size": "S",
+      "report": "groups-usage",
+      "implementation": "bulk",
+      "sha256": "dc6cc2273d5371fe0216308f39c56a785cc5c1e595db9fc677d543f6a595c7bc",
+      "goldenSha256": "dc6cc2273d5371fe0216308f39c56a785cc5c1e595db9fc677d543f6a595c7bc",
+      "bytesEqual": true
+    },
+    {
+      "size": "S",
+      "report": "users-charge",
+      "implementation": "bulk",
+      "sha256": "d7ee2db547f175e9745f3c499d1cbaedbacd2b5e676c9102262a61690c3bd627",
+      "goldenSha256": "d7ee2db547f175e9745f3c499d1cbaedbacd2b5e676c9102262a61690c3bd627",
+      "bytesEqual": true
+    },
+    {
+      "size": "S",
+      "report": "groups-charge",
+      "implementation": "bulk",
+      "sha256": "2c6a354e20ab23641c553176b7d922ddfcb312602217cbf75b22b2cd7afb9fd0",
+      "goldenSha256": "2c6a354e20ab23641c553176b7d922ddfcb312602217cbf75b22b2cd7afb9fd0",
+      "bytesEqual": true
+    },
+    {
+      "size": "L",
+      "report": "users-usage",
+      "implementation": "naive",
+      "sha256": "c26ff21b03306954084203be1cb599fc804980c96b0227eead0b772a6d8fca88",
+      "goldenSha256": "c26ff21b03306954084203be1cb599fc804980c96b0227eead0b772a6d8fca88",
+      "bytesEqual": true
+    },
+    {
+      "size": "L",
+      "report": "groups-usage",
+      "implementation": "naive",
+      "sha256": "e46fde13d029aaba20c7561374fe223c4f2e20f34f3e8f327069ea5e58eea17a",
+      "goldenSha256": "e46fde13d029aaba20c7561374fe223c4f2e20f34f3e8f327069ea5e58eea17a",
+      "bytesEqual": true
+    },
+    {
+      "size": "L",
+      "report": "users-charge",
+      "implementation": "naive",
+      "sha256": "524031bf281f918b963afe300759435e069c6734e2277d84327a293f6c2d2e39",
+      "goldenSha256": "524031bf281f918b963afe300759435e069c6734e2277d84327a293f6c2d2e39",
+      "bytesEqual": true
+    },
+    {
+      "size": "L",
+      "report": "groups-charge",
+      "implementation": "naive",
+      "sha256": "d2e1d543d354602ae92f96f663bfc968b00760f742af805995bb5be1f2eb564a",
+      "goldenSha256": "d2e1d543d354602ae92f96f663bfc968b00760f742af805995bb5be1f2eb564a",
+      "bytesEqual": true
+    },
+    {
+      "size": "L",
+      "report": "users-usage",
+      "implementation": "bulk",
+      "sha256": "c26ff21b03306954084203be1cb599fc804980c96b0227eead0b772a6d8fca88",
+      "goldenSha256": "c26ff21b03306954084203be1cb599fc804980c96b0227eead0b772a6d8fca88",
+      "bytesEqual": true
+    },
+    {
+      "size": "L",
+      "report": "groups-usage",
+      "implementation": "bulk",
+      "sha256": "e46fde13d029aaba20c7561374fe223c4f2e20f34f3e8f327069ea5e58eea17a",
+      "goldenSha256": "e46fde13d029aaba20c7561374fe223c4f2e20f34f3e8f327069ea5e58eea17a",
+      "bytesEqual": true
+    },
+    {
+      "size": "L",
+      "report": "users-charge",
+      "implementation": "bulk",
+      "sha256": "524031bf281f918b963afe300759435e069c6734e2277d84327a293f6c2d2e39",
+      "goldenSha256": "524031bf281f918b963afe300759435e069c6734e2277d84327a293f6c2d2e39",
+      "bytesEqual": true
+    },
+    {
+      "size": "L",
+      "report": "groups-charge",
+      "implementation": "bulk",
+      "sha256": "d2e1d543d354602ae92f96f663bfc968b00760f742af805995bb5be1f2eb564a",
+      "goldenSha256": "d2e1d543d354602ae92f96f663bfc968b00760f742af805995bb5be1f2eb564a",
+      "bytesEqual": true
+    }
+  ],
+  "requests": [
+    {
+      "size": "S",
+      "report": "users-usage",
+      "implementation": "naive",
+      "listed": {
+        "find": 25
+      },
+      "requests": {
+        "find": 25
+      },
+      "expected": {
+        "find": 25,
+        "aggregate": 0,
+        "getMore": 0
+      }
+    },
+    {
+      "size": "S",
+      "report": "groups-usage",
+      "implementation": "naive",
+      "listed": {
+        "find": 25
+      },
+      "requests": {
+        "find": 25
+      },
+      "expected": {
+        "find": 25,
+        "aggregate": 0,
+        "getMore": 0
+      }
+    },
+    {
+      "size": "S",
+      "report": "users-charge",
+      "implementation": "naive",
+      "listed": {
+        "find": 25
+      },
+      "requests": {
+        "find": 25
+      },
+      "expected": {
+        "find": 25,
+        "aggregate": 0,
+        "getMore": 0
+      }
+    },
+    {
+      "size": "S",
+      "report": "groups-charge",
+      "implementation": "naive",
+      "listed": {
+        "find": 25
+      },
+      "requests": {
+        "find": 25
+      },
+      "expected": {
+        "find": 25,
+        "aggregate": 0,
+        "getMore": 0
+      }
+    },
+    {
+      "size": "S",
+      "report": "users-usage",
+      "implementation": "bulk",
+      "listed": {
+        "find": 2,
+        "aggregate": 1
+      },
+      "requests": {
+        "find": 2,
+        "aggregate": 1
+      },
+      "expected": {
+        "find": 2,
+        "aggregate": 1
+      }
+    },
+    {
+      "size": "S",
+      "report": "groups-usage",
+      "implementation": "bulk",
+      "listed": {
+        "find": 2,
+        "aggregate": 1
+      },
+      "requests": {
+        "find": 2,
+        "aggregate": 1
+      },
+      "expected": {
+        "find": 2,
+        "aggregate": 1
+      }
+    },
+    {
+      "size": "S",
+      "report": "users-charge",
+      "implementation": "bulk",
+      "listed": {
+        "find": 2,
+        "aggregate": 1
+      },
+      "requests": {
+        "find": 2,
+        "aggregate": 1
+      },
+      "expected": {
+        "find": 2,
+        "aggregate": 1
+      }
+    },
+    {
+      "size": "S",
+      "report": "groups-charge",
+      "implementation": "bulk",
+      "listed": {
+        "find": 2,
+        "aggregate": 1
+      },
+      "requests": {
+        "find": 2,
+        "aggregate": 1
+      },
+      "expected": {
+        "find": 2,
+        "aggregate": 1
+      }
+    },
+    {
+      "size": "L",
+      "report": "users-usage",
+      "implementation": "naive",
+      "listed": {
+        "find": 1041
+      },
+      "requests": {
+        "find": 1041
+      },
+      "expected": {
+        "find": 1041,
+        "aggregate": 0,
+        "getMore": 0
+      }
+    },
+    {
+      "size": "L",
+      "report": "groups-usage",
+      "implementation": "naive",
+      "listed": {
+        "find": 1041
+      },
+      "requests": {
+        "find": 1041
+      },
+      "expected": {
+        "find": 1041,
+        "aggregate": 0,
+        "getMore": 0
+      }
+    },
+    {
+      "size": "L",
+      "report": "users-charge",
+      "implementation": "naive",
+      "listed": {
+        "find": 1041
+      },
+      "requests": {
+        "find": 1041
+      },
+      "expected": {
+        "find": 1041,
+        "aggregate": 0,
+        "getMore": 0
+      }
+    },
+    {
+      "size": "L",
+      "report": "groups-charge",
+      "implementation": "naive",
+      "listed": {
+        "find": 1041
+      },
+      "requests": {
+        "find": 1041
+      },
+      "expected": {
+        "find": 1041,
+        "aggregate": 0,
+        "getMore": 0
+      }
+    },
+    {
+      "size": "L",
+      "report": "users-usage",
+      "implementation": "bulk",
+      "listed": {
+        "find": 2,
+        "aggregate": 1,
+        "getMore": 2
+      },
+      "requests": {
+        "find": 2,
+        "aggregate": 1,
+        "getMore": 2
+      },
+      "expected": {
+        "find": 2,
+        "aggregate": 1
+      }
+    },
+    {
+      "size": "L",
+      "report": "groups-usage",
+      "implementation": "bulk",
+      "listed": {
+        "find": 2,
+        "aggregate": 1,
+        "getMore": 2
+      },
+      "requests": {
+        "find": 2,
+        "aggregate": 1,
+        "getMore": 2
+      },
+      "expected": {
+        "find": 2,
+        "aggregate": 1
+      }
+    },
+    {
+      "size": "L",
+      "report": "users-charge",
+      "implementation": "bulk",
+      "listed": {
+        "find": 2,
+        "aggregate": 1,
+        "getMore": 2
+      },
+      "requests": {
+        "find": 2,
+        "aggregate": 1,
+        "getMore": 2
+      },
+      "expected": {
+        "find": 2,
+        "aggregate": 1
+      }
+    },
+    {
+      "size": "L",
+      "report": "groups-charge",
+      "implementation": "bulk",
+      "listed": {
+        "find": 2,
+        "aggregate": 1,
+        "getMore": 2
+      },
+      "requests": {
+        "find": 2,
+        "aggregate": 1,
+        "getMore": 2
+      },
+      "expected": {
+        "find": 2,
+        "aggregate": 1
+      }
+    }
+  ],
+  "timings": [
+    {
+      "size": "S",
+      "report": "users-usage",
+      "implementation": "naive",
+      "warmupMs": 98.98809999999867,
+      "runsMs": [
+        94.59810000000107,
+        97.55379999999968,
+        90.36509999999907
+      ],
+      "medianMs": 94.59810000000107,
+      "minMs": 90.36509999999907,
+      "maxMs": 97.55379999999968
+    },
+    {
+      "size": "S",
+      "report": "groups-usage",
+      "implementation": "naive",
+      "warmupMs": 90.8138999999992,
+      "runsMs": [
+        102.22789999999986,
+        153.74759999999878,
+        96.63760000000002
+      ],
+      "medianMs": 102.22789999999986,
+      "minMs": 96.63760000000002,
+      "maxMs": 153.74759999999878
+    },
+    {
+      "size": "S",
+      "report": "users-charge",
+      "implementation": "naive",
+      "warmupMs": 84.0663999999997,
+      "runsMs": [
+        89.92269999999917,
+        83.46659999999974,
+        80.10810000000129
+      ],
+      "medianMs": 83.46659999999974,
+      "minMs": 80.10810000000129,
+      "maxMs": 89.92269999999917
+    },
+    {
+      "size": "S",
+      "report": "groups-charge",
+      "implementation": "naive",
+      "warmupMs": 95.8132000000005,
+      "runsMs": [
+        103.6849000000002,
+        99.00530000000072,
+        92.83680000000095
+      ],
+      "medianMs": 99.00530000000072,
+      "minMs": 92.83680000000095,
+      "maxMs": 103.6849000000002
+    },
+    {
+      "size": "S",
+      "report": "users-usage",
+      "implementation": "bulk",
+      "warmupMs": 5.379100000000108,
+      "runsMs": [
+        5.097400000000562,
+        6.652599999999438,
+        4.754799999998795
+      ],
+      "medianMs": 5.097400000000562,
+      "minMs": 4.754799999998795,
+      "maxMs": 6.652599999999438
+    },
+    {
+      "size": "S",
+      "report": "groups-usage",
+      "implementation": "bulk",
+      "warmupMs": 4.644899999999325,
+      "runsMs": [
+        4.23450000000048,
+        4.057300000000396,
+        4.317199999999502
+      ],
+      "medianMs": 4.23450000000048,
+      "minMs": 4.057300000000396,
+      "maxMs": 4.317199999999502
+    },
+    {
+      "size": "S",
+      "report": "users-charge",
+      "implementation": "bulk",
+      "warmupMs": 3.6728000000002794,
+      "runsMs": [
+        3.7572000000000116,
+        4.147999999999229,
+        3.933499999999185
+      ],
+      "medianMs": 3.933499999999185,
+      "minMs": 3.7572000000000116,
+      "maxMs": 4.147999999999229
+    },
+    {
+      "size": "S",
+      "report": "groups-charge",
+      "implementation": "bulk",
+      "warmupMs": 3.722799999999552,
+      "runsMs": [
+        3.8999000000003434,
+        3.970900000000256,
+        3.9772999999986496
+      ],
+      "medianMs": 3.970900000000256,
+      "minMs": 3.8999000000003434,
+      "maxMs": 3.9772999999986496
+    },
+    {
+      "size": "L",
+      "report": "users-usage",
+      "implementation": "naive",
+      "warmupMs": 3484.9706000000006,
+      "runsMs": [
+        4173.691299999999,
+        3268.734500000006,
+        3124.0478000000003
+      ],
+      "medianMs": 3268.734500000006,
+      "minMs": 3124.0478000000003,
+      "maxMs": 4173.691299999999
+    },
+    {
+      "size": "L",
+      "report": "groups-usage",
+      "implementation": "naive",
+      "warmupMs": 2675.767,
+      "runsMs": [
+        3628.0885999999955,
+        3292.972999999998,
+        3107.3082999999897
+      ],
+      "medianMs": 3292.972999999998,
+      "minMs": 3107.3082999999897,
+      "maxMs": 3628.0885999999955
+    },
+    {
+      "size": "L",
+      "report": "users-charge",
+      "implementation": "naive",
+      "warmupMs": 2902.9456000000064,
+      "runsMs": [
+        2573.7562999999936,
+        2447.1923000000097,
+        3000.5195999999996
+      ],
+      "medianMs": 2573.7562999999936,
+      "minMs": 2447.1923000000097,
+      "maxMs": 3000.5195999999996
+    },
+    {
+      "size": "L",
+      "report": "groups-charge",
+      "implementation": "naive",
+      "warmupMs": 2731.4416999999958,
+      "runsMs": [
+        3511.324000000008,
+        2746.6731,
+        2679.510799999989
+      ],
+      "medianMs": 2746.6731,
+      "minMs": 2679.510799999989,
+      "maxMs": 3511.324000000008
+    },
+    {
+      "size": "L",
+      "report": "users-usage",
+      "implementation": "bulk",
+      "warmupMs": 33.003899999996065,
+      "runsMs": [
+        30.023700000005192,
+        27.660899999988033,
+        30.137300000002142
+      ],
+      "medianMs": 30.023700000005192,
+      "minMs": 27.660899999988033,
+      "maxMs": 30.137300000002142
+    },
+    {
+      "size": "L",
+      "report": "groups-usage",
+      "implementation": "bulk",
+      "warmupMs": 37.05210000000079,
+      "runsMs": [
+        33.50699999999779,
+        37.78669999999693,
+        33.21340000000782
+      ],
+      "medianMs": 33.50699999999779,
+      "minMs": 33.21340000000782,
+      "maxMs": 37.78669999999693
+    },
+    {
+      "size": "L",
+      "report": "users-charge",
+      "implementation": "bulk",
+      "warmupMs": 16.530899999997928,
+      "runsMs": [
+        16.76030000000901,
+        13.630100000009406,
+        16.96789999998873
+      ],
+      "medianMs": 16.76030000000901,
+      "minMs": 13.630100000009406,
+      "maxMs": 16.96789999998873
+    },
+    {
+      "size": "L",
+      "report": "groups-charge",
+      "implementation": "bulk",
+      "warmupMs": 12.661200000002282,
+      "runsMs": [
+        11.900699999998324,
+        13.32039999999688,
+        12.032800000000861
+      ],
+      "medianMs": 12.032800000000861,
+      "minMs": 11.900699999998324,
+      "maxMs": 13.32039999999688
+    }
+  ]
+}

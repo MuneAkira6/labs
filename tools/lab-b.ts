@@ -12,6 +12,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { out, progress, REPO_ROOT, repoPath, run } from './common.ts'
+import { clearedProxyEnv } from './docker-env.ts'
 import type { ArmName, BurstLine, ParsedOutput, SummaryLine } from './lab-b-outcomes.ts'
 import {
   ARMS,
@@ -94,6 +95,8 @@ function dockerArgv(arm: ArmName, mount: string): string[] {
     `labs-b-${arm}`,
     '--network',
     'none',
+    // Docker Desktop would pass the PC's proxy settings, credentials included (tools/docker-env.ts)
+    ...clearedProxyEnv(),
     '-v',
     `${mount}:/src:ro`,
     SBT_IMAGE,

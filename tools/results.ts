@@ -35,10 +35,18 @@ export function resultFileNames(
   return { json: `${stem}.json`, md: `${stem}.md` }
 }
 
+/** What the machine block says when the tree is not a git checkout (an archive of the repository). */
+export const NO_GIT_COMMIT = 'none (not a git checkout)'
+
+/**
+ * The commit of the tree. Outside a git checkout there is none to name, and the block says so instead
+ * of leaving the field empty (found after the run, in a fresh tree unpacked without `.git`).
+ */
 export async function gitCommit(): Promise<string> {
-  const head = await run('git', ['rev-parse', '--short', 'HEAD'])
+  const head = await run('git', ['rev-parse', '--short', 'HEAD']).catch(() => null)
+  const commit = head !== null && head.code === 0 ? head.stdout.trim() : ''
+  if (commit === '') return NO_GIT_COMMIT
   const porcelain = await run('git', ['status', '--porcelain'])
-  const commit = head.stdout.trim()
   return porcelain.stdout.trim().length > 0 ? `${commit}+dirty` : commit
 }
 

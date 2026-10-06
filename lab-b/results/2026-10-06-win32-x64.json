@@ -1,0 +1,379 @@
+{
+  "lab": "b",
+  "machine": {
+    "date": "2026-10-06T01:13:43.477Z",
+    "os": "Windows_NT 10.0.26100",
+    "arch": "x64",
+    "cpu": "Intel(R) Core(TM) Ultra 5 235U x 14",
+    "memoryGiB": 31.4,
+    "node": "v24.15.0",
+    "commit": "16d924f+dirty",
+    "docker": "28.5.1"
+  },
+  "burstSizes": [
+    8,
+    20,
+    20
+  ],
+  "totalRequests": 48,
+  "expected": {
+    "fixed-await": {
+      "burst1Ok": {
+        "kind": "fewerThan",
+        "than": 8
+      },
+      "probeAfterBurst1": "timeout",
+      "laterBurstsOk": 0,
+      "probesAfterLaterBursts": "timeout",
+      "health": 200
+    },
+    "global-await": {
+      "burst1Ok": {
+        "kind": "exactly",
+        "value": 8
+      },
+      "probeAfterBurst1": "ok",
+      "laterBurstsOk": 40,
+      "probesAfterLaterBursts": "ok",
+      "health": 200
+    },
+    "global-noextra": {
+      "burst1Ok": {
+        "kind": "fewerThan",
+        "than": 8
+      },
+      "probeAfterBurst1": "timeout",
+      "laterBurstsOk": 0,
+      "probesAfterLaterBursts": "timeout",
+      "health": 200
+    },
+    "fixed-compose": {
+      "burst1Ok": {
+        "kind": "exactly",
+        "value": 8
+      },
+      "probeAfterBurst1": "ok",
+      "laterBurstsOk": 40,
+      "probesAfterLaterBursts": "ok",
+      "health": 200
+    }
+  },
+  "arms": [
+    {
+      "arm": "fixed-await",
+      "container": "labs-b-fixed-await",
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        "labs-b-fixed-await",
+        "--network",
+        "none",
+        "-e",
+        "HTTP_PROXY=",
+        "-e",
+        "HTTPS_PROXY=",
+        "-e",
+        "NO_PROXY=",
+        "-e",
+        "http_proxy=",
+        "-e",
+        "https_proxy=",
+        "-e",
+        "no_proxy=",
+        "-v",
+        "<repository>/lab-b:/src:ro",
+        "sbtscala/scala-sbt@sha256:eafe9c4c5934377cdf98e4ac6fe4f4b5d7e7dea6377fc9bc423a66c20adbdca0",
+        "bash",
+        "-c",
+        "cp -r /src /w && cd /w && sbt -Dsbt.offline=true \"run fixed-await\""
+      ],
+      "exitCode": 0,
+      "seconds": 58,
+      "bursts": [
+        {
+          "arm": "fixed-await",
+          "burst": 1,
+          "size": 8,
+          "ok": 0,
+          "timedOut": 8,
+          "failed": 0,
+          "probe": "timeout",
+          "health": 200
+        },
+        {
+          "arm": "fixed-await",
+          "burst": 2,
+          "size": 20,
+          "ok": 0,
+          "timedOut": 20,
+          "failed": 0,
+          "probe": "timeout",
+          "health": 200
+        },
+        {
+          "arm": "fixed-await",
+          "burst": 3,
+          "size": 20,
+          "ok": 0,
+          "timedOut": 20,
+          "failed": 0,
+          "probe": "timeout",
+          "health": 200
+        }
+      ],
+      "summary": {
+        "arm": "fixed-await",
+        "total": 48,
+        "ok": 0,
+        "timedOut": 48,
+        "failed": 0
+      },
+      "raw": [
+        "LAB-B {\"arm\":\"fixed-await\",\"burst\":1,\"size\":8,\"ok\":0,\"timedOut\":8,\"failed\":0,\"probe\":\"timeout\",\"health\":200}",
+        "LAB-B {\"arm\":\"fixed-await\",\"burst\":2,\"size\":20,\"ok\":0,\"timedOut\":20,\"failed\":0,\"probe\":\"timeout\",\"health\":200}",
+        "LAB-B {\"arm\":\"fixed-await\",\"burst\":3,\"size\":20,\"ok\":0,\"timedOut\":20,\"failed\":0,\"probe\":\"timeout\",\"health\":200}",
+        "LAB-B {\"arm\":\"fixed-await\",\"total\":48,\"ok\":0,\"timedOut\":48,\"failed\":0}"
+      ],
+      "differences": []
+    },
+    {
+      "arm": "global-await",
+      "container": "labs-b-global-await",
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        "labs-b-global-await",
+        "--network",
+        "none",
+        "-e",
+        "HTTP_PROXY=",
+        "-e",
+        "HTTPS_PROXY=",
+        "-e",
+        "NO_PROXY=",
+        "-e",
+        "http_proxy=",
+        "-e",
+        "https_proxy=",
+        "-e",
+        "no_proxy=",
+        "-v",
+        "<repository>/lab-b:/src:ro",
+        "sbtscala/scala-sbt@sha256:eafe9c4c5934377cdf98e4ac6fe4f4b5d7e7dea6377fc9bc423a66c20adbdca0",
+        "bash",
+        "-c",
+        "cp -r /src /w && cd /w && sbt -Dsbt.offline=true \"run global-await\""
+      ],
+      "exitCode": 0,
+      "seconds": 28,
+      "bursts": [
+        {
+          "arm": "global-await",
+          "burst": 1,
+          "size": 8,
+          "ok": 8,
+          "timedOut": 0,
+          "failed": 0,
+          "probe": "ok",
+          "health": 200
+        },
+        {
+          "arm": "global-await",
+          "burst": 2,
+          "size": 20,
+          "ok": 20,
+          "timedOut": 0,
+          "failed": 0,
+          "probe": "ok",
+          "health": 200
+        },
+        {
+          "arm": "global-await",
+          "burst": 3,
+          "size": 20,
+          "ok": 20,
+          "timedOut": 0,
+          "failed": 0,
+          "probe": "ok",
+          "health": 200
+        }
+      ],
+      "summary": {
+        "arm": "global-await",
+        "total": 48,
+        "ok": 48,
+        "timedOut": 0,
+        "failed": 0
+      },
+      "raw": [
+        "LAB-B {\"arm\":\"global-await\",\"burst\":1,\"size\":8,\"ok\":8,\"timedOut\":0,\"failed\":0,\"probe\":\"ok\",\"health\":200}",
+        "LAB-B {\"arm\":\"global-await\",\"burst\":2,\"size\":20,\"ok\":20,\"timedOut\":0,\"failed\":0,\"probe\":\"ok\",\"health\":200}",
+        "LAB-B {\"arm\":\"global-await\",\"burst\":3,\"size\":20,\"ok\":20,\"timedOut\":0,\"failed\":0,\"probe\":\"ok\",\"health\":200}",
+        "LAB-B {\"arm\":\"global-await\",\"total\":48,\"ok\":48,\"timedOut\":0,\"failed\":0}"
+      ],
+      "differences": []
+    },
+    {
+      "arm": "global-noextra",
+      "container": "labs-b-global-noextra",
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        "labs-b-global-noextra",
+        "--network",
+        "none",
+        "-e",
+        "HTTP_PROXY=",
+        "-e",
+        "HTTPS_PROXY=",
+        "-e",
+        "NO_PROXY=",
+        "-e",
+        "http_proxy=",
+        "-e",
+        "https_proxy=",
+        "-e",
+        "no_proxy=",
+        "-v",
+        "<repository>/lab-b:/src:ro",
+        "sbtscala/scala-sbt@sha256:eafe9c4c5934377cdf98e4ac6fe4f4b5d7e7dea6377fc9bc423a66c20adbdca0",
+        "bash",
+        "-c",
+        "cp -r /src /w && cd /w && sbt -Dsbt.offline=true \"set javaOptions ++= Seq(\\\"-Dscala.concurrent.context.numThreads=3\\\", \\\"-Dscala.concurrent.context.maxThreads=3\\\", \\\"-Dscala.concurrent.context.maxExtraThreads=0\\\")\" \"run global-noextra\""
+      ],
+      "exitCode": 0,
+      "seconds": 58,
+      "bursts": [
+        {
+          "arm": "global-noextra",
+          "burst": 1,
+          "size": 8,
+          "ok": 0,
+          "timedOut": 8,
+          "failed": 0,
+          "probe": "timeout",
+          "health": 200
+        },
+        {
+          "arm": "global-noextra",
+          "burst": 2,
+          "size": 20,
+          "ok": 0,
+          "timedOut": 20,
+          "failed": 0,
+          "probe": "timeout",
+          "health": 200
+        },
+        {
+          "arm": "global-noextra",
+          "burst": 3,
+          "size": 20,
+          "ok": 0,
+          "timedOut": 20,
+          "failed": 0,
+          "probe": "timeout",
+          "health": 200
+        }
+      ],
+      "summary": {
+        "arm": "global-noextra",
+        "total": 48,
+        "ok": 0,
+        "timedOut": 48,
+        "failed": 0
+      },
+      "raw": [
+        "LAB-B {\"arm\":\"global-noextra\",\"burst\":1,\"size\":8,\"ok\":0,\"timedOut\":8,\"failed\":0,\"probe\":\"timeout\",\"health\":200}",
+        "LAB-B {\"arm\":\"global-noextra\",\"burst\":2,\"size\":20,\"ok\":0,\"timedOut\":20,\"failed\":0,\"probe\":\"timeout\",\"health\":200}",
+        "LAB-B {\"arm\":\"global-noextra\",\"burst\":3,\"size\":20,\"ok\":0,\"timedOut\":20,\"failed\":0,\"probe\":\"timeout\",\"health\":200}",
+        "LAB-B {\"arm\":\"global-noextra\",\"total\":48,\"ok\":0,\"timedOut\":48,\"failed\":0}"
+      ],
+      "differences": []
+    },
+    {
+      "arm": "fixed-compose",
+      "container": "labs-b-fixed-compose",
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        "labs-b-fixed-compose",
+        "--network",
+        "none",
+        "-e",
+        "HTTP_PROXY=",
+        "-e",
+        "HTTPS_PROXY=",
+        "-e",
+        "NO_PROXY=",
+        "-e",
+        "http_proxy=",
+        "-e",
+        "https_proxy=",
+        "-e",
+        "no_proxy=",
+        "-v",
+        "<repository>/lab-b:/src:ro",
+        "sbtscala/scala-sbt@sha256:eafe9c4c5934377cdf98e4ac6fe4f4b5d7e7dea6377fc9bc423a66c20adbdca0",
+        "bash",
+        "-c",
+        "cp -r /src /w && cd /w && sbt -Dsbt.offline=true \"run fixed-compose\""
+      ],
+      "exitCode": 0,
+      "seconds": 26,
+      "bursts": [
+        {
+          "arm": "fixed-compose",
+          "burst": 1,
+          "size": 8,
+          "ok": 8,
+          "timedOut": 0,
+          "failed": 0,
+          "probe": "ok",
+          "health": 200
+        },
+        {
+          "arm": "fixed-compose",
+          "burst": 2,
+          "size": 20,
+          "ok": 20,
+          "timedOut": 0,
+          "failed": 0,
+          "probe": "ok",
+          "health": 200
+        },
+        {
+          "arm": "fixed-compose",
+          "burst": 3,
+          "size": 20,
+          "ok": 20,
+          "timedOut": 0,
+          "failed": 0,
+          "probe": "ok",
+          "health": 200
+        }
+      ],
+      "summary": {
+        "arm": "fixed-compose",
+        "total": 48,
+        "ok": 48,
+        "timedOut": 0,
+        "failed": 0
+      },
+      "raw": [
+        "LAB-B {\"arm\":\"fixed-compose\",\"burst\":1,\"size\":8,\"ok\":8,\"timedOut\":0,\"failed\":0,\"probe\":\"ok\",\"health\":200}",
+        "LAB-B {\"arm\":\"fixed-compose\",\"burst\":2,\"size\":20,\"ok\":20,\"timedOut\":0,\"failed\":0,\"probe\":\"ok\",\"health\":200}",
+        "LAB-B {\"arm\":\"fixed-compose\",\"burst\":3,\"size\":20,\"ok\":20,\"timedOut\":0,\"failed\":0,\"probe\":\"ok\",\"health\":200}",
+        "LAB-B {\"arm\":\"fixed-compose\",\"total\":48,\"ok\":48,\"timedOut\":0,\"failed\":0}"
+      ],
+      "differences": []
+    }
+  ]
+}
