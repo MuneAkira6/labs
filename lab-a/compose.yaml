@@ -1,0 +1,28 @@
+# Lab A's database (SCOPE.md 2.8). The runner drives it with
+#   docker compose -p labs-a -f lab-a/compose.yaml up -d --wait
+# and, at the end, `down -v`.
+name: labs-a
+
+services:
+  mongo:
+    # The image of SCOPE.md section 1, by digest only: never pulled, tagged or removed (facts F3).
+    image: mongo@sha256:9854f7139445d766a9523571d6f047530c45547460ffcf8259eb2bf4264632ca
+    ports:
+      - '127.0.0.1:18460:27017'
+    tmpfs:
+      - /data/db
+    environment:
+      # Docker Desktop passes the PC's proxy settings into every container; the database needs none
+      # and must not inherit them. All six forms, upper and lower case, set to empty strings.
+      HTTP_PROXY: ''
+      HTTPS_PROXY: ''
+      NO_PROXY: ''
+      http_proxy: ''
+      https_proxy: ''
+      no_proxy: ''
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.runCommand({ ping: 1 }).ok']
+      interval: 2s
+      timeout: 10s
+      retries: 30
+      start_period: 5s

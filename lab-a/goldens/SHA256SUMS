@@ -1,0 +1,8 @@
+d2e1d543d354602ae92f96f663bfc968b00760f742af805995bb5be1f2eb564a  lab-a/goldens/L/groups-charge.csv
+e46fde13d029aaba20c7561374fe223c4f2e20f34f3e8f327069ea5e58eea17a  lab-a/goldens/L/groups-usage.csv
+524031bf281f918b963afe300759435e069c6734e2277d84327a293f6c2d2e39  lab-a/goldens/L/users-charge.csv
+c26ff21b03306954084203be1cb599fc804980c96b0227eead0b772a6d8fca88  lab-a/goldens/L/users-usage.csv
+2c6a354e20ab23641c553176b7d922ddfcb312602217cbf75b22b2cd7afb9fd0  lab-a/goldens/S/groups-charge.csv
+dc6cc2273d5371fe0216308f39c56a785cc5c1e595db9fc677d543f6a595c7bc  lab-a/goldens/S/groups-usage.csv
+d7ee2db547f175e9745f3c499d1cbaedbacd2b5e676c9102262a61690c3bd627  lab-a/goldens/S/users-charge.csv
+38ddc64162c34f87f7847f1bfc9e80ad2aab09c916a1043dd68ffcf2ad41ad49  lab-a/goldens/S/users-usage.csv

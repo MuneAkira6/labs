@@ -1,7 +1,10 @@
 # SCOPE — labs
 
-Status: **FROZEN** (2026-10-05). Becomes AS-BUILT in G5. Changes during the run are recorded first under
-"Contract changes" in PROGRESS.md, with the reason; this text is then updated and the change named.
+Status: **AS-BUILT** (2026-10-06). Frozen 2026-10-05, built G1 to G4, closed in G5. Changes during the
+run were recorded first under "Contract changes" in PROGRESS.md, with the reason, and then written into
+this text. Section 9 names every difference between this text and the frozen one. The run made exactly
+one contract change, to section 4.4; everything else below described the build correctly before it was
+built and still does.
 
 Three small, reproducible experiments rebuilt from the author's practice (`materials/practice.md`):
 
@@ -28,7 +31,7 @@ appears anywhere in it; the README points to case study 07 for those.
 | `lab-a/` | `src/`, `compose.yaml`, `goldens/`, `results/` | the run |
 | `lab-b/src/main/scala/`, `lab-b/results/` | the Scala program and its results | the run |
 | `lab-c/` | the generator, the two build setups, `results/` (the generated application goes to `lab-c/app/`, which is ignored) | the run |
-| `tools/` | the three runners and their shared helpers | the run |
+| `tools/` | the three runners, their shared helpers, and one check that needs a database and so cannot be a Vitest file (section 9, difference 2) | the run |
 | `test/` | Vitest tests; no test needs Docker or the network | the run |
 | `README.md`, `PUBLISHING.md`, `.github/workflows/ci.yml` | G5 | the run |
 
@@ -68,7 +71,8 @@ prints its result table (the Markdown of section 1.4) to stdout and its progress
 
 ### Result files
 
-Each lab run writes two files into its lab's `results/` directory and replaces files of the same name:
+Each lab run writes two files into its lab's `results/` directory and replaces files of the same name
+(so a run on a new UTC date adds a set rather than replacing one; see section 9, difference 4):
 `<UTC date>-<platform>-<arch>.json` and the same name with `.md`, for example
 `2026-10-05-linux-x64.json` (`process.platform`, `process.arch`). The JSON holds the machine block and
 every raw value; the Markdown holds the machine block and the tables. Result files of the run are
@@ -325,8 +329,19 @@ Neither setup enables a persistent cache.
 ### 4.4 The equivalence check
 
 After the last production build of each tool: every label `m0` … `m<N-1>` occurs in the emitted
-JavaScript, and the emitted HTML contains `id="root"` and references an emitted script. The lab fails
-when either tool misses one.
+JavaScript, and the emitted HTML mounts the application on `root` and references an emitted script. The
+lab fails when either tool misses one.
+
+> **Changed during the run (2026-10-05, in G4; edited here by the bus).** This condition read "the
+> emitted HTML contains `id="root"`". In `mode: 'production'` html-webpack-plugin 5.6.8 re-serialises
+> the page without attribute quotes whatever `minify` is set to — `false`, `true`, `{}` and an explicit
+> `removeAttributeQuotes: false` all emit `<div id=root></div>` (facts F20; the bus reproduced all four
+> variants independently) — so the literal string is unreachable for the webpack arm without leaving the
+> production mode 4.2 requires, and SCOPE.md 8 puts tuning either tool out of scope. "Mounts the
+> application on `root`" is satisfied by `id="root"`, `id='root'` and the unquoted `id=root` alike; a
+> page mounting on anything else still fails. The meaning is unchanged and the reason is recorded under
+> "Contract changes" in PROGRESS.md. Section 4.3's readiness check keeps the literal `id="root"`,
+> which both tools' development pages supply (facts F21). G5 carries this into the AS-BUILT contract.
 
 ## 5. Tests
 
@@ -374,3 +389,60 @@ Every check that can fail is seen failing once, on a planted case, in a test tha
 - Optimising beyond the bulk rewrite of 2.3, or tuning either build tool beyond 4.2.
 - Any lab on another machine during the run (the author runs them on Windows afterwards).
 - Pulling, building or tagging images; any network access other than `pnpm install`.
+
+## 9. AS-BUILT — differences from the frozen contract
+
+Written in G5. The first entry is a contract change: the frozen text asked for something the pinned
+toolchain cannot produce, and the run proved it. The rest are clarifications — the frozen text allowed
+what was built but did not spell it out, so they are named here rather than left for a reader to
+discover.
+
+### 1. Contract change — section 4.4, the HTML condition of lab C's equivalence check
+
+**Was:** "the emitted HTML contains `id="root"`". **Is:** "the emitted HTML mounts the application on
+`root`", satisfied by `id="root"`, `id='root'` and the unquoted `id=root`.
+
+**Reason.** In `mode: 'production'` html-webpack-plugin 5.6.8 re-serialises the page without attribute
+quotes and emits `<div id=root></div>`. Its `minify` option does not change that: `false`, `true`, `{}`
+and an explicit `removeAttributeQuotes: false` all produce the same bytes, and a template file behaves
+like `templateContent`; in development mode the quotes survive, so the stripping is tied to the mode
+(facts F20, reproduced independently by the bus). The plugin version is pinned by F9, section 4.2 fixes
+the setup and section 8 puts tuning either tool out of scope, so the literal string is unreachable for
+the webpack arm. Rsbuild's page does hold `id="root"`. The condition's meaning is unchanged — the page
+must carry a mount point whose id is `root` — and a page mounting on anything else still fails, which
+the control of AC-40 shows on `id="app"`, `id=rootish` and a page with no id. Section 4.3's readiness
+check was **not** relaxed: both tools' development pages supply the literal `id="root"` (facts F21).
+
+### 2. Clarification — `tools/` holds a fourth script
+
+Section 1 listed `tools/` as "the three runners and their shared helpers". The store-parity check of
+G1's AC-4 needs a running MongoDB, and section 5 requires `pnpm test` to need neither Docker nor the
+network while the given `vitest.config.ts` picks up `test/**/*.test.ts`. The check therefore lives at
+`tools/store-parity.ts`, run as `node tools/store-parity.ts`, where `biome.json` and `tsconfig.json`
+still cover it. The layout table above now says so.
+
+### 3. Clarification — `lab-a/src/` and `tools/` hold more files than the contract names
+
+Sections 2.1 to 2.4 name `data.ts`, `store.ts`, `naive.ts` and `bulk.ts`. The build also has
+`lab-a/src/csv.ts` (the byte rules of 2.2 and a reader that checks them), `lab-a/src/reports.ts` (the
+four reports' columns, shared by both implementations), `lab-a/src/counting.ts` (the request counting of
+2.4, separable from the driver so a fake client can drive it in a test) and `lab-a/src/seed.ts`. In
+`tools/`, besides the three runners: `common.ts`, `results.ts` (the machine block and the median and
+range rules of 1.4), `lab-b-outcomes.ts` (the expected-outcome table of 3.3 and the `LAB-B` parser) and
+`lab-c-equivalence.ts` (the checks of 4.4). Splitting them out is what lets `pnpm test` cover the rules
+without Docker, which section 5 requires. Section 4.2's "a build script and a dev script" are
+`lab-c/build-webpack.ts` and `lab-c/dev-webpack.ts`.
+
+### 4. Clarification — this run left two dated result sets per lab
+
+The naming rule of 1.4 is `<UTC date>-<platform>-<arch>`, and a run replaces files of the same name.
+G5's final runs crossed midnight UTC, so each lab carries both a `2026-10-05` and a `2026-10-06` set
+from the same commit and the same deliverables. Both are real runs of the same build; the README's 結果
+quotes the `2026-10-06` set, which is the last one. The earlier set is also what G2, G3 and G4's ledger
+rows quote, so it is kept rather than pruned.
+
+### 5. Note — the Scala of 3.1 compiles with warnings
+
+`Future { … }(pool)` passes the execution context positionally, as the table of 3.1 writes it. Scala
+3.8.4 accepts it and emits 7 warnings asking for a `using` clause instead. The code is left in the
+contract's own form; the warnings are not errors and the build succeeds.

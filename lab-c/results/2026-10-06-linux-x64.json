@@ -1,0 +1,113 @@
+{
+  "lab": "c",
+  "machine": {
+    "date": "2026-10-06T00:41:33.763Z",
+    "os": "Linux 5.4.0-216-generic",
+    "arch": "x64",
+    "cpu": "Intel(R) Xeon(R) E-2146G CPU @ 3.50GHz x 12",
+    "memoryGiB": 46.9,
+    "node": "v24.19.0",
+    "commit": "eb6646f+dirty"
+  },
+  "modules": 1000,
+  "warmups": 1,
+  "runs": 5,
+  "appDir": "lab-c/app",
+  "builds": [
+    {
+      "tool": "webpack",
+      "warmupMs": 4366.081979,
+      "runsMs": [
+        4416.099114000001,
+        4296.233977999998,
+        4327.0821049999995,
+        4225.685248999998,
+        4271.575799000002
+      ],
+      "medianMs": 4296.233977999998,
+      "minMs": 4225.685248999998,
+      "maxMs": 4416.099114000001
+    },
+    {
+      "tool": "rsbuild",
+      "warmupMs": 350.75209699999687,
+      "runsMs": [
+        346.5081949999985,
+        359.384908,
+        350.41912899999807,
+        381.6772000000019,
+        384.91711700000087
+      ],
+      "medianMs": 359.384908,
+      "minMs": 346.5081949999985,
+      "maxMs": 384.91711700000087
+    }
+  ],
+  "devStarts": [
+    {
+      "tool": "webpack",
+      "port": 18461,
+      "warmupMs": 2435.682960000002,
+      "runsMs": [
+        2522.0390590000025,
+        2424.9843180000025,
+        2538.8829560000013,
+        2492.980961000001,
+        2522.7960359999997
+      ],
+      "medianMs": 2522.0390590000025,
+      "minMs": 2424.9843180000025,
+      "maxMs": 2538.8829560000013,
+      "scriptSrc": "main.js",
+      "startsWithPortFreedAfterStop": 6,
+      "starts": 6
+    },
+    {
+      "tool": "rsbuild",
+      "port": 18462,
+      "warmupMs": 429.3322709999993,
+      "runsMs": [
+        441.70453799999814,
+        433.59664299999713,
+        450.98018299999967,
+        419.52452600000106,
+        429.8081230000025
+      ],
+      "medianMs": 433.59664299999713,
+      "minMs": 419.52452600000106,
+      "maxMs": 450.98018299999967,
+      "scriptSrc": "/static/js/lib-react.js",
+      "startsWithPortFreedAfterStop": 6,
+      "starts": 6
+    }
+  ],
+  "equivalence": [
+    {
+      "tool": "webpack",
+      "modules": 1000,
+      "labelsFound": 1000,
+      "mountsOnRoot": true,
+      "firstScriptSrc": "main.502d4fbef09e5d9617e3.js",
+      "assets": [
+        "index.html",
+        "main.502d4fbef09e5d9617e3.js",
+        "main.502d4fbef09e5d9617e3.js.LICENSE.txt"
+      ],
+      "violations": []
+    },
+    {
+      "tool": "rsbuild",
+      "modules": 1000,
+      "labelsFound": 1000,
+      "mountsOnRoot": true,
+      "firstScriptSrc": "/static/js/lib-react.c7700dff93.js",
+      "assets": [
+        "index.html",
+        "static/js/index.dd5a0eadd9.js",
+        "static/js/lib-react.c7700dff93.js",
+        "static/js/lib-react.c7700dff93.js.LICENSE.txt"
+      ],
+      "violations": []
+    }
+  ]
+}

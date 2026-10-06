@@ -271,3 +271,210 @@ rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331
   `docker run --rm --network none -v "$PWD:/repo" -w /repo <that image> -no-color .github/workflows/ci.yml`.
   The image is shared and is only run, never pulled or removed.
 - Decisions that depend on it: G5's workflow row.
+
+### F16: What the generator of SCOPE.md 2.1 writes, per collection and size
+
+- Measured on: 2026-10-05 / last re-measured: 2026-10-05
+- Measured by: the run (G1), on this machine
+- Command: `node -e '…import("./lab-a/src/data.ts")…'` printing `countsOf(generate(size))` and the
+  sha256 of `canonicalDump(generate(size))` twice for each size
+- Output:
+
+```
+S counts: {"groups":4,"users":20,"usage_events":487,"charge_events":78}
+S canonical dump sha256 run 1: 1e7821bd311a6fac3af5db3e67388ce605c97dcf4b400632bdb010a5dd7e4cfd
+S canonical dump sha256 run 2: 1e7821bd311a6fac3af5db3e67388ce605c97dcf4b400632bdb010a5dd7e4cfd
+L counts: {"groups":40,"users":1000,"usage_events":24546,"charge_events":3460}
+L canonical dump sha256 run 1: f24280cf9c5e3eb9a2c93f35dcd474f700e8c2afb3f09c5a14bdbdaca85130f7
+L canonical dump sha256 run 2: f24280cf9c5e3eb9a2c93f35dcd474f700e8c2afb3f09c5a14bdbdaca85130f7
+```
+
+- What follows: `groups` and `users` are the contract's own shape table (4 and 20, 40 and 1,000). The
+  two event counts are drawn, so they are a measurement, not a contract value. They decompose: of the
+  487 usage events of S, 40 are the boundary events (2 per user × 20 users) and 447 are drawn over
+  20 users × 30 days = 600 day slots, which is the ~3/4 of slots with `next() % 4 > 0`; of the 78
+  charge events, 40 are boundary events and 38 are drawn over 20 users with `k = next() % 4` (mean 1.5,
+  so about 30 expected). On L: 24,546 = 2,000 boundary + 22,546 of 30,000 slots, and 3,460 = 2,000
+  boundary + 1,460 drawn over 1,000 users. One reading of 2.1 is fixed here and shows in these numbers:
+  `next() % 480` is drawn **inside** the `when n > 0` clause, so a day with no event consumes one draw,
+  not two. Both sizes reproduce bit for bit across two generations.
+- Decisions that depend on it: the pinned counts of `test/data.test.ts` (AC-2); the goldens of AC-10,
+  which are built from exactly this data.
+
+### F17: What a monitored client lists during one naive export, and why `getMore` is 0
+
+- Measured on: 2026-10-05 / last re-measured: 2026-10-05
+- Measured by: the run (G1), on this machine, against `labs-a` (SCOPE.md 2.8) with `mongodb` 7.7.0
+- Commands: one `MongoClient(uri, { monitorCommands: true })` with the counter of
+  `lab-a/src/counting.ts` attached, printing its tallies after `connect()`, after one naive export of
+  `users-usage` on size S, and after `close()`; and, separately, the largest result set the naive shape
+  asks for on size L, computed from the generator
+- Output:
+
+```
+after connect, listed: {} requests: {} total: 0
+after one export, listed: {"find":25} requests: {"find":25}
+after close, listed: {"find":25,"endSessions":1} requests: {"find":25}
+L: largest naive result set — groups 40 users per group 25, max usage events per user in window 30 max charge events per user in window 4
+```
+
+- What follows: with this driver the handshake emits no `commandStarted` event at all, so "zero at the
+  start of the export" is literally zero, not "zero requests among a handful of listed names".
+  `endSessions` arrives only when the client closes, after the export is complete; it is listed and not
+  counted, exactly as 2.4 says. The allow-list `NON_REQUEST_COMMANDS` in `lab-a/src/counting.ts` is
+  therefore wider than what this machine emits: only `endSessions` of it was ever seen.
+  `getMore` is 0 for the naive shape because every result set it asks for fits inside the driver's
+  101-document first batch: at most 40 groups, 25 users per group, 30 usage events and 4 charge events
+  per user in the window. This reasoning does not carry to the bulk shape of G2: its `find` of all
+  1,000 users on size L cannot fit one batch, which is why 2.4 measures bulk's `getMore` and does not
+  assert it — a bulk `getMore` of 0 on L would be the surprising result.
+- Decisions that depend on it: the `getMore: 0` assertion for naive (AC-7); the zero-at-start check of
+  the runner; reading bulk's `getMore` as a measurement in G2 (AC-18).
+
+### F18: Bulk's `getMore` on both sizes, and where the two on L come from
+
+- Measured on: 2026-10-05 / last re-measured: 2026-10-05
+- Measured by: the run (G2), on this machine, against `labs-a` with `mongodb` 7.7.0
+- Commands: `pnpm lab:a`, whose counting client now reports the whole `listed` tally per export; then,
+  for the decomposition, one fresh monitored client per request of the bulk shape on size L, each
+  running that request alone
+- Output:
+
+```
+requests S/users-usage bulk: listed {"find":2,"aggregate":1} counted {"find":2,"aggregate":1} expected {"find":2,"aggregate":1}
+requests L/users-usage bulk: listed {"find":2,"aggregate":1,"getMore":2} counted {"find":2,"aggregate":1,"getMore":2} expected {"find":2,"aggregate":1}
+L find groups sorted by code: 40 documents, listed {"find":1}
+L find all 1000 users sorted by groupId, code: 1000 documents, listed {"find":1,"getMore":1}
+L aggregate usage_events by userId over the window: 1000 documents, listed {"aggregate":1,"getMore":1}
+```
+
+  (the other three reports of each size printed the same counts as the one quoted; `find` is 2 and
+  `aggregate` 1 everywhere)
+
+- What follows: bulk's `getMore` is 0 on size S and 2 on size L, for all four reports. On S nothing
+  exceeds the driver's 101-document first batch: 4 groups, 20 users, 20 aggregated users. On L the two
+  `getMore` are one each from the two requests whose result set is 1,000 documents — the find of all
+  users and the aggregation by `userId` — while the find of the 40 groups needs none. So the non-zero
+  `getMore` is the evidence that the bulk shape really reads every user in one request; a `getMore` of
+  0 on L would mean it does not. This is why 2.4 measures bulk's `getMore` and does not assert it, and
+  the runner leaves it out of the expected object rather than setting it to 0.
+- Decisions that depend on it: AC-18, which reports these counts rather than asserting them; the
+  `ExpectedCounts` of `lab-a/src/counting.ts`, whose `getMore` is optional for exactly this reason.
+  It does not overturn F17, which asserted `getMore` 0 for the naive shape only.
+
+### F19: How many of burst 1's eight requests complete in the two frozen arms
+
+- Measured on: 2026-10-05 / last re-measured: 2026-10-05
+- Measured by: the run (G3), on this machine, each arm in its own container and JVM with
+  `--network none`
+- Commands: `pnpm lab:b` three times in all, plus one single-arm `docker run` per arm while the program
+  was being built; the number asked for is the `ok` field of the `burst":1` line
+- Output (the burst-1 lines of the two frozen arms, identical in every observation):
+
+```
+LAB-B {"arm":"fixed-await","burst":1,"size":8,"ok":0,"timedOut":8,"failed":0,"probe":"timeout","health":200}
+LAB-B {"arm":"global-noextra","burst":1,"size":8,"ok":0,"timedOut":8,"failed":0,"probe":"timeout","health":200}
+```
+
+- What follows: on this machine, with the eight requests released together by a latch, the count is 0
+  every time — four observations per arm, never anything but 0. SCOPE.md 3.3 nevertheless says "fewer
+  than 8 ok" rather than 0, and that is right: the number depends on whether any of the eight outer
+  futures reaches its `Await.result` before the three pool threads are all occupied, which is a race.
+  The runner therefore compares `burst1.ok < 8` and reports the number as measured; it does not assert
+  0. Asserting 0 would harden this machine's scheduling into the contract and would make the lab fail
+  on a slower or busier machine for no good reason. What proves the pool is frozen is not this number
+  but the probe timing out and bursts 2 and 3 scoring 0 ok, while `/health` still answers 200 after
+  every burst — the server's own cached pool being untouched by the arm's pool.
+- Decisions that depend on it: the `{ kind: 'fewerThan', than: 8 }` form in
+  `tools/lab-b-outcomes.ts` and its test that accepts 0, 1, 2 and 7 alike (AC-29, AC-31, AC-34).
+
+### F20: html-webpack-plugin 5.6.8 strips attribute quotes in production, whatever `minify` says
+
+- Measured on: 2026-10-05 / last re-measured: 2026-10-05
+- Measured by: the run (G4), on this machine, with the installed `html-webpack-plugin` 5.6.8 and
+  `webpack` 5.111.1 of facts F9
+- Setup: a scratch webpack build in the OS temp directory whose `HtmlWebpackPlugin` is given the page
+  of SCOPE.md 4.2, `…<body><div id="root"></div></body>…`, built six ways
+- Output (whether the emitted `index.html` holds the literal `id="root"`):
+
+```
+minify-false         id="root" present: false | <!doctype html><html lang=en><head><meta charset=utf-8>…
+keep-quotes          id="root" present: false | <!doctype html><html lang=en><head><meta charset=utf-8>…
+minify-true-default  id="root" present: false | <!doctype html><html lang=en><head><meta charset=utf-8>…
+production + template file                 id="root": false  <!doctype html><html lang=en>…
+development + templateContent              id="root": true   <!doctype html><html lang="en"><head><meta charset="utf-8">…
+production + templateContent + minify:{}   id="root": false  <!doctype html><html lang=en>…
+```
+
+  (`keep-quotes` is `minify: { removeAttributeQuotes: false, collapseWhitespace: true }`)
+
+- What follows: in `mode: 'production'` this plugin emits `<div id=root></div>`, and the documented
+  `minify` switch does not affect it — `false`, `true`, `{}` and an explicit
+  `removeAttributeQuotes: false` all give the same bytes, and a template file behaves like
+  `templateContent`. In `mode: 'development'` the quotes survive, so the stripping is tied to the mode.
+  The plugin did receive the option: a probe of the constructed config printed `options.minify: false`.
+  Two consequences. First, lab C's dev-server readiness check is unaffected, because
+  `webpack-dev-server` runs the development configuration and its page holds `id="root"`. Second, the
+  production page of the webpack arm cannot hold the literal `id="root"` that SCOPE.md 4.4 asks for,
+  while Rsbuild's page does hold it. Nothing in 4.2 may be tuned to change this and the plugin version
+  is pinned by F9, so the contract's literal expectation is the thing that has to give: recorded as the
+  run's one contract change, with the check asking that the page mount on `root` in either quoting form.
+  The weaker reading was not adopted: a page without a root mount still fails, and the control proves it.
+- Decisions that depend on it: the contract change recorded in PROGRESS.md; `mountsOnRoot` in
+  `tools/lab-c-equivalence.ts` and its control; AC-40.
+
+### F21: The dev-server readiness definition of 4.3 on each tool
+
+- Measured on: 2026-10-05 / last re-measured: 2026-10-05
+- Measured by: the run (G4), on this machine, 1,000 generated modules, 6 starts per tool
+- Setup: the readiness check of SCOPE.md 4.3 — `GET /` answering 200 with `id="root"` in the body
+  **and** the first `<script src>` of that page also answering 200, tried every 50 ms with a 120 s
+  limit
+- Output (the first script each tool's dev page offered, and whether the port came back free):
+
+```
+webpack port 18461 - port free after 6 of 6 stops; first script main.js
+rsbuild port 18462 - port free after 6 of 6 stops; first script /static/js/lib-react.js
+```
+
+- What follows: both conditions are reachable on both tools with the literal `id="root"`, so 4.3 needs
+  no relaxation at all — the contract change of this run is confined to 4.4. The reason is in F20: the
+  quote-stripping of html-webpack-plugin happens in `mode: 'production'`, and `webpack-dev-server`
+  serves the development configuration, whose page keeps `id="root"`. The two tools do differ in the
+  page they serve, which is why the check reads the page it is given: webpack's first script is the
+  relative `main.js`, Rsbuild's is the absolute `/static/js/lib-react.js`, and Rsbuild's page carries
+  two scripts where webpack's carries one. Both are resolved against `http://127.0.0.1:<port>/` before
+  being fetched. No start ever needed a second attempt at a stage, and the 120 s limit was never
+  approached: the slowest measured start was webpack at about 2.5 s.
+- Decisions that depend on it: the readiness check of `tools/lab-c.ts` keeps 4.3's literal
+  `id="root"` while the production equivalence check of 4.4 accepts the unquoted form (AC-42, AC-43);
+  `firstScriptSrc` reads quoted and unquoted `src` attributes and relative and absolute paths alike.
+
+### F22: A run on a new UTC date adds a result set rather than replacing one
+
+- Measured on: 2026-10-06 / last re-measured: 2026-10-06
+- Measured by: the run (G5), on this machine
+- Command: `pnpm lab:a`, `pnpm lab:b` and `pnpm lab:c` for AC-52, then `ls` of the three result
+  directories
+- Output:
+
+```
+lab-a/results/:
+2026-10-05-linux-x64.json  2026-10-05-linux-x64.md  2026-10-06-linux-x64.json  2026-10-06-linux-x64.md
+lab-b/results/:
+2026-10-05-linux-x64.json  2026-10-05-linux-x64.md  2026-10-06-linux-x64.json  2026-10-06-linux-x64.md
+lab-c/results/:
+2026-10-05-linux-x64.json  2026-10-05-linux-x64.md  2026-10-06-linux-x64.json  2026-10-06-linux-x64.md
+```
+
+- What follows: the name of a result file is `<UTC date>-<platform>-<arch>` and a run "replaces files
+  of the same name" (SCOPE.md 1.4), so a run that happens on a later UTC date adds a pair instead of
+  replacing one. G5's final runs crossed midnight UTC — lab A's block is dated
+  `2026-10-06T00:38:25.011Z` — so each lab now carries two sets from the same commit and the same
+  deliverables. Both sets are real runs of the same build. Neither is pruned: the `2026-10-06` set is
+  what the README's 結果 quotes, and the `2026-10-05` set is what the G2, G3 and G4 ledger rows quote,
+  so deleting it would leave those rows pointing at files that no longer exist — which is the defect
+  the bus rejected G2 for in the first place.
+- Decisions that depend on it: the README quotes the `2026-10-06` set and says so; AS-BUILT difference
+  4 records the behaviour against 1.4; handover item 2 leaves the human the choice of pruning before
+  publishing.
