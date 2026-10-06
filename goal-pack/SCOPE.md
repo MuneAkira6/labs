@@ -493,3 +493,15 @@ Made by a human on 2026-10-06, after the bus had answered DONE; not reviewed by 
    `pnpm lab:c --modules 200 --runs 1`, each exit 0 with every check held; afterwards no Docker object
    `labs-*`, no listener on 18460-18469 and no `labs-*` entry of the run's user in the OS temp
    directory. The first attempt of this check is how item 5 was found.
+7. **CI on GitHub.** The repository was pushed to GitHub, and the workflow ran there for the first
+   time on the push of `5b74b2c`: three jobs passed and `lab B, all four arms` failed with exit 3, `the
+   sbt image is not on this machine by digest and the run never pulls one`. Section 6 asks CI to pull
+   the images it needs, and the workflow's header said it did, but no job pulled anything: lab A passed
+   only because Compose pulls a missing image itself, and every machine the labs had run on (items 2
+   and 6) already held both images. Each lab job now pulls its image, by the digest the lab uses,
+   before it runs the lab. New `test/ci-images.test.ts`, three tests that read the workflow as text:
+   `lab-a` pulls the image of `lab-a/compose.yaml`, `lab-b` the one `tools/lab-b.ts` checks for, and a
+   control removes lab B's pull from a copy and sees the check fail. With the run's workflow all three
+   fail. On Windows afterwards: `Tests  98 passed (98)`, `pnpm lint` 33 files, `pnpm typecheck`, and
+   actionlint of section 1's digest with no findings. On GitHub the push of `e27046b` passed all four
+   jobs (`Tests  98 passed (98)`; lab B in 2 min 57 s, every arm as 3.3 expects).
