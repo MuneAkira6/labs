@@ -39,6 +39,8 @@ jobs:
           node-version: '24'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Each lab job pulls its image by the digest the lab uses (SCOPE.md 1; test/ci-images.test.ts).
+      - run: docker pull mongo@sha256:9854f7139445d766a9523571d6f047530c45547460ffcf8259eb2bf4264632ca
       # A CI run does not commit its results; it only proves the lab still holds.
       - run: pnpm lab:a --size S --runs 1
 
@@ -53,6 +55,8 @@ jobs:
           node-version: '24'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Lab B never pulls: without its image it stops with exit 3.
+      - run: docker pull sbtscala/scala-sbt@sha256:eafe9c4c5934377cdf98e4ac6fe4f4b5d7e7dea6377fc9bc423a66c20adbdca0
       - run: pnpm lab:b
 
   lab-c:
